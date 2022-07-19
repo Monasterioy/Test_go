@@ -101,7 +101,7 @@ from
 
 
 ¿Cuántos partidos jugó de visitante cada equipo?
-  SELECT
+ SELECT
   DISTINCT equipos.nombre,
   (
     select
@@ -109,8 +109,8 @@ from
     from
       partidos
     where
-      partidos.id_equipos_visitante = equipos.id_equipos or partidos.id_equipos_local = equipos.id_equipos
+      partidos.id_equipos_visitante = equipos.id_equipos 
   ) as partidos
 from
   partidos as j1
-  join equipos on j1.id_equipos_visitante = equipos.id_equipos OR j1.id_equipos_local = equipos.id_equipos
+  join equipos on j1.id_equipos_visitante = equipos.id_equipos
