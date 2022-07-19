@@ -1,0 +1,116 @@
+#TABLA equipos
+CREATE TABLE equipos (
+    id_equipos BIGINT UNSIGNED AUTO_INCREMENT PRIMARY KEY,
+    nombre VARCHAR(45)
+);
+
+#TABLA JUGADORES
+CREATE TABLE jugadores (
+    id_jugadores BIGINT UNSIGNED AUTO_INCREMENT PRIMARY KEY,
+    id_equipos BIGINT UNSIGNED,
+    name VARCHAR(45),
+    fecha_nacimineto DATE
+);
+
+#TABLA PATIDOS
+
+CREATE TABLE partidos (
+    id_partidos BIGINT UNSIGNED AUTO_INCREMENT PRIMARY KEY,
+    id_equipos_local BIGINT UNSIGNED,
+    id_equipos_visitante BIGINT UNSIGNED,
+    goles_local INT,
+    goles_visitante INT,
+    fecha_partido DATE
+);
+
+
+#CREAR ID FORENEO JUGADORES-equipos
+ALTER TABLE `jugadores` ADD CONSTRAINT `FK_EQUIPOS` FOREIGN KEY (`id_equipos`) REFERENCES `equipos`(`id_equipos`) ON DELETE CASCADE ON UPDATE CASCADE; 
+
+#CREAR ID FORENEO equipos-PATIDOS
+ALTER TABLE `partidos` ADD CONSTRAINT `FK_EQUIPOS_LOCAL` FOREIGN KEY (`id_equipos_local`) REFERENCES `equipos`(`id_equipos`) ON DELETE CASCADE ON UPDATE CASCADE;
+ALTER TABLE `partidos` ADD CONSTRAINT `FK_EQUIPOS_VISITANTE` FOREIGN KEY (`id_equipos_visitante`) REFERENCES `equipos`(`id_equipos`) ON DELETE CASCADE ON UPDATE CASCADE;
+
+#Insertando equipo
+INSERT INTO `equipos` (`id_equipos`, `nombre`) VALUES (NULL, 'Mineros FC');
+INSERT INTO `equipos` (`id_equipos`, `nombre`) VALUES (NULL, 'Anzoategui FC');
+INSERT INTO `equipos` (`id_equipos`, `nombre`) VALUES (NULL, 'Caraca FC');
+INSERT INTO `equipos` (`id_equipos`, `nombre`) VALUES (NULL, 'Chacarita');
+
+#Inserta jugadores ejemplos
+INSERT INTO `jugadores` (`id_jugadores`, `id_equipos`, `name`, `fecha_nacimineto`) VALUES (NULL, '1', 'Mineros FC 1', '1988-07-12');
+INSERT INTO `jugadores` (`id_jugadores`, `id_equipos`, `name`, `fecha_nacimineto`) VALUES (NULL, '1', 'Mineros FC 2', '1990-12-01');
+INSERT INTO `jugadores` (`id_jugadores`, `id_equipos`, `name`, `fecha_nacimineto`) VALUES (NULL, '1', 'Mineros FC 3', '2016-07-25');
+
+INSERT INTO `jugadores` (`id_jugadores`, `id_equipos`, `name`, `fecha_nacimineto`) VALUES (NULL, '2', 'Anzoategui 1', '2013-07-12');
+INSERT INTO `jugadores` (`id_jugadores`, `id_equipos`, `name`, `fecha_nacimineto`) VALUES (NULL, '2', 'Anzoategui 2', '2011-08-21');
+INSERT INTO `jugadores` (`id_jugadores`, `id_equipos`, `name`, `fecha_nacimineto`) VALUES (NULL, '2', 'Anzoategui 3', '2016-09-25');
+
+INSERT INTO `jugadores` (`id_jugadores`, `id_equipos`, `name`, `fecha_nacimineto`) VALUES (NULL, '4', 'Chacarita 1', '1995-07-12');
+INSERT INTO `jugadores` (`id_jugadores`, `id_equipos`, `name`, `fecha_nacimineto`) VALUES (NULL, '4', 'Chacarita 2', '1991-11-05');
+INSERT INTO `jugadores` (`id_jugadores`, `id_equipos`, `name`, `fecha_nacimineto`) VALUES (NULL, '4', 'Chacarita 3', '2020-07-29');
+
+
+#Insertando partidos 
+INSERT INTO `partidos` (`id_partidos`, `id_equipos_local`, `id_equipos_visitante`, `goles_local`, `goles_visitante`, `fecha_partido`) VALUES (NULL, '1', '2', '3', '2', '2016-01-01');
+
+INSERT INTO `partidos` (`id_partidos`, `id_equipos_local`, `id_equipos_visitante`, `goles_local`, `goles_visitante`, `fecha_partido`) VALUES (NULL, '5', '8', '1', '0', '2016-02-12');
+
+¿Cuál es el jugador más viejo de cada equipo?:
+select *
+from jugadores as j1
+where not exists (
+  select *
+  from jugadores as j2
+  where j1.id_equipos = j2.id_equipos and j1.fecha_nacimineto > j2.fecha_nacimineto)
+
+
+¿Qué equipos jugaron el 01/01/2016 y el 12/02/2016?
+select *
+from partidos as j1
+join equipos on j1.id_equipos_local= equipos.id_equipos
+where j1.fecha_partido='2016-01-01' or j1.fecha_partido='2016-02-12'
+
+
+Diga el total de goles que hizo el equipo “Chacarita” en su historia (como local o visitante)?
+
+SELECT
+  DISTINCT equipos.nombre,
+  (
+    (
+      select
+        COALESCE(sum(partidos.goles_local),0)
+      from
+        partidos
+        where partidos.id_equipos_local = equipos.id_equipos
+    ) + (
+      select
+        COALESCE(sum(partidos.goles_visitante),0)
+      from
+        partidos
+        where partidos.id_equipos_visitante = equipos.id_equipos
+    )
+  ) as total_goles
+from
+  partidos as j1
+  join equipos on j1.id_equipos_local = equipos.id_equipos
+  where
+  equipos.nombre = 'Chacarita'
+
+
+
+
+¿Cuántos partidos jugó de visitante cada equipo?
+  SELECT
+  DISTINCT equipos.nombre,
+  (
+    select
+      count(*)
+    from
+      partidos
+    where
+      partidos.id_equipos_visitante = equipos.id_equipos or partidos.id_equipos_local = equipos.id_equipos
+  ) as partidos
+from
+  partidos as j1
+  join equipos on j1.id_equipos_visitante = equipos.id_equipos OR j1.id_equipos_local = equipos.id_equipos

@@ -1,0 +1,33 @@
+1) Supone que en un repositorio GIT hiciste un commit y te olvidaste un archivo.
+Explicar como se soluciona si hiciste push, y como si aun no hiciste. De ser posible, buscar que quede solo
+un commit con los cambios?:
+
+si hice push: 
+
+1-  primero eliminaria el push en el head del repositorio con git revert HEAD,
+2-  luego de haber eliminado el push en el head. revertiria el commit que tengo en local con git reset --soft HEAD~1, utilizando --soft
+    para no eliminar los cambios y luego git add . y git commit -m"mensaje" para guardar todos los cambios y dejar un solo commit
+3-  luego git push origin rama nuevamente para enviar el nuevo commit al HEAD 
+
+si no hice push:
+
+1-  revertiria el commit que tengo en local con git reset --soft HEAD~1, utilizando --soft
+    para no eliminar los cambios y luego git add . y git commit -m"mensaje" para guardar todos los cambios y dejar un solo commit 
+2-  luego git push origin rama nuevamente para enviar el nuevo commit al HEAD 
+
+
+2) Tenes un archivo comiteado en un repositorio GIT que deseas que quede ignorado. Que pasos debes realizar.
+1-  crear o modificar el archivo .gitignore agregando el archivo a ignorar, luego hacer git add . y git commit -m"mensaje",
+    y ya nuestro archivo deberia estar ignorado 
+
+3) Explica las ventajas de cargar en tu sitio las librerias de terceros por GTM: no tengo conocimientos sobre GTM
+
+
+Extra
+Contanos en pocas lineas cual crees que es la mayor innovacion en el mundo del desarrollo en los ultimos 5
+años, y por que.
+
+Considero que un gran avance en el area de desarrollo, fue el lanzamiento de Flutter como lenguaje, la posibilidad
+que ofrece el mismo de desarrollar para las interfaces disponibles (web, movil y escritorio) con una sola ejecucion, en mi opinion
+podria sentar una base que mejoraria la productividad tanto de equipos de desarrollos y productos a futuro, y que otros lenguajes 
+venidero podrian emular en busca de mejorar su eficiencia y alcance dentro del area de desarrollo y tecnología 
